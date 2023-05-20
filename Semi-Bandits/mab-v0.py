@@ -77,6 +77,7 @@ def selecionar_melhor_braco(matriz_bracos):
 # Streamlit
 st.set_page_config(page_title="MAB", page_icon=":robot_face:")
 
+
 st.title("Multi Armed Bandits - Semi Bandits")
 
 colored_header(
@@ -140,5 +141,5 @@ if st.sidebar.button("Rodar MAB 📈"):
     st.write(f"O braço com a maior média de recompensas é o {melhor_braco+1}")
 
 
-
+#defender a utilizacao do mab
   

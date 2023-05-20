@@ -1,7 +1,6 @@
 import random
 import streamlit as st
 import plotly.graph_objs as go
-from streamlit_extras.altex import line_chart, get_stocks_data
 import matplotlib.pyplot as plt
 import plotly.express as px
 import pandas as pd
@@ -12,15 +11,15 @@ class Braco:
         self.valor_minimo = valor_minimo
         self.valor_maximo = valor_maximo
 
-def gerar_matriz_bracos(num_bracos, limite_minimo, limite_maximo):
-    # Criando uma matriz de bracos com valores aleatórios para o braço, valor mínimo e valor máximo
-    matriz_bracos = []
-    for i in range(num_bracos):
-        valor_minimo = random.randint(limite_minimo, limite_maximo)
-        valor_maximo = random.randint(valor_minimo, limite_maximo)
-        braco = Braco(valor_minimo, valor_maximo)
-        matriz_bracos.append([braco.valor_minimo, braco.braco, braco.valor_maximo])
-    return matriz_bracos
+    def gerar_matriz_bracos(num_bracos, limite_minimo, limite_maximo):
+        # Criando uma matriz de bracos com valores aleatórios para o braço, valor mínimo e valor máximo
+        matriz_bracos = []
+        for i in range(num_bracos):
+            valor_minimo = random.randint(limite_minimo, limite_maximo)
+            valor_maximo = random.randint(valor_minimo, limite_maximo)
+            braco = Braco(valor_minimo, valor_maximo)
+            matriz_bracos.append([braco.valor_minimo, braco.braco, braco.valor_maximo])
+        return matriz_bracos
 
 def escolher_braco(medias_bracos, num_rodadas, num_bracos, epsilon):
     # Escolhendo um braço com base na estratégia Epsilon-Greedy
@@ -35,7 +34,8 @@ def escolher_braco(medias_bracos, num_rodadas, num_bracos, epsilon):
 def escolher_braco(num_rodadas, num_bracos):
 
     matriz_rodadas = []
-    for i in range(num_rodadas):
+    recompensa = random.randint()
+    
         
 
 
@@ -78,8 +78,10 @@ taxa_exploracao = st.sidebar.slider("Taxa de exploração (%):", min_value=0, ma
 
 if st.sidebar.button("Trabalhar"):
 
+    MAB = Braco(num_bracos, limite_minimo, limite_maximo)
+
     # Gerando a matriz de robôs com base nos parâmetros definidos pelos sliders
-    matriz_bracos = gerar_matriz_bracos(num_bracos, limite_minimo, limite_maximo)
+    matriz_bracos = MAB.gerar_matriz_bracos(num_bracos, limite_minimo, limite_maximo)
 
     # Adicionando uma tabela com os valores mínimo e máximo de cada robô
     st.write("Valores mínimo e máximo de cada braço:")
@@ -121,5 +123,3 @@ if st.sidebar.button("Trabalhar"):
     pie_chart = px.medias_bracos
     fig = px.pie(df, values='Média', names='Braço')
     st.write(fig)
-    
-   
