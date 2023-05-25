@@ -28,32 +28,30 @@ def gerar_matriz_bracos(num_bracos, limite_minimo, limite_maximo):
 
 
 # Funcao para gerar as recompensas e aplicar o algoritmo do MAB
+
 def gerar_recompensas(matriz_bracos, num_rodadas, taxa_exploracao, taxa_semi):
     recompensas = []
     for i in range(num_rodadas):
         if random.random() < taxa_exploracao:
-            #braco_escolhido = random.choice(matriz_bracos)
-            braco_escolhido = matriz_bracos.index(random.choice(matriz_bracos))
-
+            braco_escolhido_idx = random.choice(range(len(matriz_bracos)))
         else:
-            braco_atual = matriz_bracos[selecionar_melhor_braco(matriz_bracos)]
+            braco_atual_idx = selecionar_melhor_braco(matriz_bracos)
             if random.random() < taxa_semi:
-                braco_semi = random.choice(matriz_bracos)
-                if braco_semi.valor_maximo > braco_atual.valor_maximo:
-                    braco_escolhido = braco_semi
+                braco_semi_idx = random.choice(range(len(matriz_bracos)))
+                if matriz_bracos[braco_semi_idx].valor_maximo > matriz_bracos[braco_atual_idx].valor_maximo:
+                    braco_escolhido_idx = braco_semi_idx
                 else:
-                    braco_escolhido = braco_atual
+                    braco_escolhido_idx = braco_atual_idx
             else:
-                braco_escolhido = braco_atual
+                braco_escolhido_idx = braco_atual_idx
         
-        recompensa_escolhida = random.randint(braco_escolhido.valor_minimo, braco_escolhido.valor_maximo)
-        #recompensa_escolhida = random.randint(matriz_bracos[braco_escolhido].valor_minimo, matriz_bracos[braco_escolhido].valor_maximo)
-        braco_escolhido.contagem_escolhas += 1
-        braco_escolhido.recompensas.append(recompensa_escolhida)
-        recompensas.append([f"Rodada {i + 1} ", f"Braço {braco_escolhido}", recompensa_escolhida])
+        braco_escolhido = braco_escolhido_idx + 1  # Adiciona 1 para corresponder ao número do braço
+        recompensa_escolhida = random.randint(matriz_bracos[braco_escolhido_idx].valor_minimo, matriz_bracos[braco_escolhido_idx].valor_maximo)
+        matriz_bracos[braco_escolhido_idx].contagem_escolhas += 1
+        matriz_bracos[braco_escolhido_idx].recompensas.append(recompensa_escolhida)
+        recompensas.append([f"Rodada {i + 1} ", braco_escolhido, recompensa_escolhida])
 
-    #return pd.DataFrame(recompensas, columns=["Rodada", "Braço", "Recompensa"])
-    return recompensas
+    return pd.DataFrame(recompensas, columns=["Rodada", "Braço", "Recompensa"])
 
 # Funcao para contar quantas vezes um braco foi escolhido
 def contar_escolhas(matriz_bracos):
@@ -144,8 +142,7 @@ if st.sidebar.button("Rodar MAB :game_die:"):
     col3.metric(label="Media das recompensas", value=round(melhor_media, 3))
 
 
- 
-    
+
     # Print da tabela dos valores maximos e minimos
     st.write("Valores mínimo e máximo de cada braço:")
     tabela_bracos = [["Braço", "Valor mínimo", "Valor máximo"]]
@@ -157,15 +154,12 @@ if st.sidebar.button("Rodar MAB :game_die:"):
     st.write("Resultados das Rodadas:")
     st.dataframe(recompensas)
 
-    # Grafico dos valores do braco por rodada
-    grafico_escolhas = pd.DataFrame(recompensas, columns=["Rodada", "Braço", "Recompensa"])
-    figLine = px.line(grafico_escolhas, x="Rodada", y="Recompensa", color='Braço')
-    st.write(figLine)
 
 
     # Contando as escolhas de cada braço
-    st.write("Contagem de Escolhas:")
-    st.dataframe(escolhas)
+    escolhas = contar_escolhas(matriz_bracos)
+    st.write("Contagem de Escolhas")
+    st.table(escolhas)
 
     # Grafico da contagem de escolha de cada braco
     fig.update_layout(
@@ -177,6 +171,7 @@ if st.sidebar.button("Rodar MAB :game_die:"):
 
     # Grafico de pizza da quantidade de escolha de cada braco
     st.plotly_chart(figPie)
+
 
     # Calculando a mé=edia das recompensas de cada braco
     
