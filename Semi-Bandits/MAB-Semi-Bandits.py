@@ -5,6 +5,7 @@ import plotly.express as px
 from streamlit_extras.colored_header import colored_header
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 class Braco:
     def __init__(self, valor_minimo, valor_maximo):
@@ -182,8 +183,17 @@ if st.sidebar.button("Rodar MAB :game_die:"):
     st.write("Tabelas com os resultados dos braços por rodada")
     st.dataframe(recompensas)
 
+    st.write("Gráfico de dispersão dos resultados de cada rodada")
+    df = recompensas
+    fig = px.scatter(
+        df,
+        x="Rodada",
+        y="Recompensa",
+        
+    )
 
-
+    st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+    
     # Contando as escolhas de cada braços
     st.header("Contagem de Escolhas")
     st.write("Tabela da contagem de escolhas de cada braço")
@@ -204,7 +214,6 @@ if st.sidebar.button("Rodar MAB :game_die:"):
         yaxis_title="Contagem",
     )
     st.plotly_chart(figPieContagem)
-
 
     # Calculando a méedia das recompensas de cada braco
     st.header("Media das recompensas")
