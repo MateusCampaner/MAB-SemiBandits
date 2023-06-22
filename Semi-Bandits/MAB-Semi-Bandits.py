@@ -4,8 +4,8 @@ import pandas as pd
 import plotly.express as px
 from streamlit_extras.colored_header import colored_header
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
 import plotly.express as px
+import matplotlib.pyplot as plt
 
 class Braco:
     def __init__(self, valor_minimo, valor_maximo):
@@ -38,7 +38,8 @@ def gerar_recompensas(matriz_bracos, num_rodadas, taxa_exploracao, taxa_semi):
         else:
             braco_atual_idx = selecionar_melhor_braco(matriz_bracos)
             if random.random() < taxa_semi:
-                braco_semi_idx = random.choice(range(len(matriz_bracos)))
+                melhores_bracos = int(len(matriz_bracos) * taxa_semi)
+                braco_semi_idx = random.choice(range(len(matriz_bracos[:melhores_bracos])))
                 if matriz_bracos[braco_semi_idx].valor_maximo > matriz_bracos[braco_atual_idx].valor_maximo:
                     braco_escolhido_idx = braco_semi_idx
                 else:
@@ -135,7 +136,7 @@ taxa_semi = st.sidebar.slider("Taxa Semi Bandits:", min_value=0.0, max_value=1.0
 
 
 # Botão para rodar
-if st.sidebar.button("Rodar MAB :game_die:"):
+if st.sidebar.button("Executar algoritmo MAB :game_die:"):
 
     # Gerando a matriz dos valores de cada braco
     matriz_bracos = gerar_matriz_bracos(num_bracos, limite_minimo, limite_maximo)
@@ -152,8 +153,6 @@ if st.sidebar.button("Rodar MAB :game_die:"):
 
     figBarMedias = go.Figure(data=[go.Bar(x=list(medias_recompensas.keys()), y=list(medias_recompensas.values()))])
 
-    
-
     melhor_braco = selecionar_melhor_braco(matriz_bracos)
     qtd_melhor_braco = quantidade_escolhas_melhor_braco(matriz_bracos)
     melhor_media = selecionar_melhor_media(matriz_bracos)
@@ -169,14 +168,21 @@ if st.sidebar.button("Rodar MAB :game_die:"):
     color_name="red-70",
     )
 
-
-    # Print da tabela dos valores maximos e minimos
+    # Print da tabela dos valores minimos e maximos 
     st.header("Braços gerados")
     st.write("Tabelas dos Valores mínimos e máximos de cada braço gerado")
     tabela_bracos = [["Braço", "Valor mínimo", "Valor máximo"]]
     for i, braco in enumerate(matriz_bracos):
         tabela_bracos.append([f"Braço {i+1}", braco.valor_minimo, braco.valor_maximo])
     st.table(tabela_bracos)
+
+    # Grafico de barras dos valores minimos e maximos
+    dados_bracos = []
+    for i, braco in enumerate(matriz_bracos):
+        dados_braco = {'Braço': f"Braço {i+1}", 'Valor Mínimo': braco.valor_minimo, 'Valor Máximo': braco.valor_maximo}
+        dados_bracos.append(dados_braco)
+    st.write("Gráfico dos Valores mínimos e máximos de cada braço gerado")
+    st.bar_chart(dados_bracos, x='Braço', y=['Valor Mínimo', 'Valor Máximo'])
 
     # Gerando os valores de cada braco por rodada
     st.header("Resultado das rodadas")
@@ -189,7 +195,8 @@ if st.sidebar.button("Rodar MAB :game_die:"):
         df,
         x="Rodada",
         y="Recompensa",
-        
+        color="Braço",
+        color_continuous_scale="reds"   
     )
 
     st.plotly_chart(fig, theme="streamlit", use_container_width=True)
@@ -216,13 +223,13 @@ if st.sidebar.button("Rodar MAB :game_die:"):
     st.plotly_chart(figPieContagem)
 
     # Calculando a méedia das recompensas de cada braco
-    st.header("Media das recompensas")
-    st.write("média das recompensas")
+    st.header("Média das recompensas")
+    st.write("Tabela da Média das recompensas")
     st.table(medias_recompensas)
 
     # Grafico da contagem de escolha de cada braco
     figBarMedias.update_layout(
-        title="Gráfico de barras da contagem de escolhas de cada braço",
+        title="Gráfico de barras da média de cada braço",
         xaxis_title="Braço",
         yaxis_title="Contagem",
     )
@@ -231,6 +238,4 @@ if st.sidebar.button("Rodar MAB :game_die:"):
     # Grafico de linha da contagem de bracos
     
 
-
-#defender a utilizacao do mab
   
