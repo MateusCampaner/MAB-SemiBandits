@@ -235,7 +235,6 @@ if st.sidebar.button("Executar algoritmo MAB :game_die:"):
     )
     st.plotly_chart(figBarMedias)
 
-    # Grafico de linha da contagem de bracos
-    
+   
 
   
