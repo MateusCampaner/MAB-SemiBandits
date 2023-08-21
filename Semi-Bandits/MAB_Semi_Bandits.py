@@ -127,10 +127,10 @@ with st.sidebar.expander("Informações de execução de algoritmo"):
     st.write('**Taxa Semi Bandits:** Define a porcentagem de um braço aleatório ser escolhido após a fase de exploração')
 
 
-num_bracos = st.sidebar.slider("Número de braços:", min_value=1, max_value=20, value=5)
-limite_minimo = st.sidebar.slider("Limite mínimo:", min_value=0, max_value=50, value=10)
-limite_maximo = st.sidebar.slider("Limite máximo:", min_value=51, max_value=100, value=60)
-num_rodadas = st.sidebar.slider("Número de rodadas:", min_value=10, max_value=1000, value=100)
+num_bracos = st.sidebar.number_input("Número de braços:", min_value=1, max_value=20, value=5)
+limite_minimo = st.sidebar.number_input("Limite mínimo:", min_value=0, max_value=50, value=10)
+limite_maximo = st.sidebar.number_input("Limite máximo:", min_value=51, max_value=100, value=60)
+num_rodadas = st.sidebar.number_input("Número de rodadas:", min_value=10, max_value=1000, value=100)
 taxa_exploracao = st.sidebar.slider("Taxa de Exploração:", min_value=0.0, max_value=1.0, value=0.2, step=0.01)
 taxa_semi = st.sidebar.slider("Taxa Semi Bandits:", min_value=0.0, max_value=1.0, value=0.2, step=0.01)
 
